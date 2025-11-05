@@ -3,6 +3,16 @@
         <h2>Carrinho de Compras</h2>
     </div>
     <div class="card-body">
+        <?php
+            if(isset($_SESSION["cliente"]["id"])) {
+                echo"<p class='alert alert-success text-center p-2 m-2'>
+                    Olá {$_SESSION['cliente']['nome']}
+                    -
+                    <a href='carrinho/sair'>Sair</a>
+                    </p>
+                    <br>";
+            }
+        ?>
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
