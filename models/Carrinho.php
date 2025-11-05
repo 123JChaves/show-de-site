@@ -47,6 +47,38 @@
             return $consuta->fetch(PDO::FETCH_OBJ);
             
         }
+
+        public function salvarPedido($preference_id) {
+
+            $sqlPedido = "insert into pedido values (NULL, :cliente_id, NOW(), :preference_id)";
+            $consulta = $this->pdo->prepare($sqlPedido);
+            $consulta->bindParam(":cliente_id", $_SESSION["cliente"]["id"]);
+            $consulta->bindParam(":preference_id", $preference_id);
+            
+            if($consulta->execute()) {
+
+                $pedido_id = $this->pdo->lastInsertId();
+
+                foreach($_SESSION["carrinho"] as $dados) {
+
+                    $sqlItem = "insert into item values (:pedido_id, :produto_id, :qtde, :valor)";
+                    $consultaItem = $this->pdo->prepare($sqlItem);
+                    $consultaItem->bindParam(':pedido_id', $pedido_id);
+                    $consultaItem->bindParam(':produto_id', $dados['id']);
+                    $consultaItem->bindParam(':qtde', $dados['qtde']);
+                    $consultaItem->bindParam(':valor', $dados['valor']);
+                    
+                    if(!$consultaItem->execute()) return 0;
+                }
+
+            } else {
+                return 0;
+            }
+
+            unset($_SESSION["carrinho"]);
+            return 1;
+
+        }
             
 
     }

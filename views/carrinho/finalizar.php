@@ -46,6 +46,11 @@
 
     $preference->save();
 
+    $msg = $this->carrinho->salvarPedido($preference->id);
+
+    if($msg == 0) {
+        echo"<script>alert('Erro ao cadastrar pedido');history.back();</script>";
+    }
 
 ?>
 
