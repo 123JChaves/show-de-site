@@ -1,5 +1,5 @@
 <?php
-    session_start();
+session_start();
 ?>
 
 <!DOCTYPE html>
@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Show de Feira - Site</title>
 
-    <base href="http://<?=$_SERVER["SERVER_NAME"].$_SERVER["SCRIPT_NAME"]?>">
+    <base href="http://<?= $_SERVER["SERVER_NAME"] . $_SERVER["SCRIPT_NAME"] ?>">
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/all.min.css">
@@ -42,15 +42,15 @@
                     $urlCategoria = "http://localhost/show-de-feira/public/apis/categoria.php";
                     $dadosCategoria = json_decode(file_get_contents($urlCategoria));
 
-                    foreach($dadosCategoria as $dados) {
+                    foreach ($dadosCategoria as $dados) {
 
-                        ?>
+                    ?>
                         <li class="nav-item">
-                        <a href="categoria/index/<?=$dados->id?>" class="nav-link">
-                            <?= $dados->descricao?>
-                        </a>
-                    </li>
-                        <?php
+                            <a href="categoria/index/<?= $dados->id ?>" class="nav-link">
+                                <?= $dados->descricao ?>
+                            </a>
+                        </li>
+                    <?php
 
                     }
 
@@ -61,6 +61,30 @@
                             <i class="fas fa-shopping-cart"></i>
                         </a>
                     </li>
+                    <?php
+                    if (isset($_SESSION['cliente'])) {
+                    ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="pedidos">
+                                <i class="fas fa-gift"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="carrinho/sair">
+                                <i class="fas fa-power-off"></i>
+                            </a>
+                        </li>
+                    <?php
+                    } else {
+                    ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="carrinho/finalizar">
+                                <i class="fas fa-user"></i>
+                            </a>
+                        </li>
+                    <?php
+                    }
+                    ?>
                 </ul>
             </div>
         </div>
@@ -68,30 +92,30 @@
     <main class="container">
         <?php
 
-            $param = "index";
-            $img ="http://localhost/show-de-feira/public/arquivos/";
+        $param = "index";
+        $img = "http://localhost/show-de-feira/public/arquivos/";
 
-            if(isset($_GET["param"])) {
-                $param = explode("/", $_GET["param"]);
-            }
+        if (isset($_GET["param"])) {
+            $param = explode("/", $_GET["param"]);
+        }
 
-            $controller = $param[0] ?? "index";
-            $acao = $param[1] ?? "index";
-            $id = $param[2] ?? null;
+        $controller = $param[0] ?? "index";
+        $acao = $param[1] ?? "index";
+        $id = $param[2] ?? null;
 
-            $controller = ucfirst($controller)."Controller";
+        $controller = ucfirst($controller) . "Controller";
 
-            //echo $controller;
-            
-            if(file_exists("../controllers/{$controller}.php")) {
-                
-                require "../controllers/{$controller}.php";
-                
-                $control = new $controller();
-                $control->$acao($id, $img);
-            } else {
-                require "../views/index/erro.php";
-            }
+        //echo $controller;
+
+        if (file_exists("../controllers/{$controller}.php")) {
+
+            require "../controllers/{$controller}.php";
+
+            $control = new $controller();
+            $control->$acao($id, $img);
+        } else {
+            require "../views/index/erro.php";
+        }
         ?>
     </main>
 </body>
